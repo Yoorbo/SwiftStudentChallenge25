@@ -16,10 +16,10 @@ struct GaugeSectionView: View {
 	@Environment(\.modelContext) private var modelContext
 	@Binding var expandedFoodButton: Bool
 	
+	@State var gaugeObservable: GaugeObservable = GaugeObservable()
+	
 	var body: some View {
-		let timeSinceHours = (entries.first?.timeIntervalSinceNowInHours) ?? 0.0
-		
-		GaugeView(timeSince: .constant(timeSinceHours))
+		GaugeView(gauge: gaugeObservable)
 			.overlay {
 				VStack {
 					Spacer()
@@ -92,6 +92,12 @@ struct GaugeSectionView: View {
 				}
 			}
 			.sensoryFeedback(.start, trigger: expandedFoodButton == true)
+			.onChange(of: entries) {
+				gaugeObservable.timeSince = (
+					entries.first?.timeIntervalSinceNowInHours
+				) ?? 0.0
+			}
+			.animation(.spring, value: gaugeObservable.timeSince)
 	}
 	
 	func addFoodEntry(type: FoodType) {
