@@ -4,6 +4,7 @@ import SwiftData
 @available(iOS 18.0, *)
 struct ContentView: View {
 	@Query(sort: \FoodEntry.timestamp, order: .reverse) private var entries: [FoodEntry]
+	@State var gaugeObservable: GaugeObservable = GaugeObservable()
 	
 	@State var expandedFoodButton: Bool = false
 	
@@ -13,6 +14,8 @@ struct ContentView: View {
 				.frame(maxWidth: 350, maxHeight: 350)
 				.padding(30)
 			
+			Text(gaugeObservable.currentPhase.name)
+			
 			Spacer()
 			
 			FoodListView()
@@ -20,6 +23,7 @@ struct ContentView: View {
 		}
 		.animation(.spring, value: entries)
 		.animation(.spring, value: expandedFoodButton)
+		.environment(gaugeObservable)
 		.navigationTitle("HealthyTrack")
 	}
 }

@@ -46,6 +46,7 @@ struct GaugeView: View {
         .overlay {
             VStack {
 				Text("\(gauge.timeSince, specifier: "%.0f")")
+					.foregroundStyle(.primary)
 					.font(.system(size: gauge.timeSince + 50 - (gauge.timeSince > 16 ? gauge.timeSince * 1.025 : 0), weight: .black, design: .rounded))
                     .fontWeight(.black)
 					.contentTransition(.numericText(value: gauge.timeSince))
