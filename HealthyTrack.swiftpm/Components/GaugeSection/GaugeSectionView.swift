@@ -95,6 +95,9 @@ struct GaugeSectionView: View {
 			.onChange(of: entries) {
 				calcTimeSince()
 			}
+			.onChange(of: gaugeObservable.forceTriggerRecalc) {
+				calcTimeSince()
+			}
 			.onAppear {
 				calcTimeSince()
 			}

@@ -34,6 +34,8 @@ class GaugeObservable {
 	var showInfo: Bool = false
 	var selectedPhase: GaugeSegment?
 	
+	var forceTriggerRecalc: Int = 0
+	
 	var descriptor = GaugeDescriptor(
 		maxNumber: 16,
 		segments: [

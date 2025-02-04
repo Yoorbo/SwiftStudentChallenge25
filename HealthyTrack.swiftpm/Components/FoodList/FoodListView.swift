@@ -48,10 +48,12 @@ struct FoodListView: View {
 								.foregroundColor(.secondary)
 						}
 						Spacer()
-					}
-					.onTapGesture {
-						selectedEntry = entry
-						showInspector = true
+						Image(systemName: "pencil")
+							.font(.headline)
+							.foregroundStyle(.secondary)
+						Image(systemName: "chevron.right")
+							.font(.headline)
+							.foregroundStyle(.primary)
 					}
 					.listRowSeparator(.hidden)
 					.padding()
@@ -66,6 +68,10 @@ struct FoodListView: View {
 					}
 					.clipShape(RoundedRectangle(cornerRadius: 18))
 					.frame(height: 55)
+					.onTapGesture {
+						selectedEntry = entry
+						showInspector = true
+					}
 				}
 				.listStyle(.plain)
 				.listRowSpacing(0)
@@ -76,6 +82,10 @@ struct FoodListView: View {
 					removal: .opacity
 				)
 			)
+			.onChange(of: entries) {
+				showInspector = false
+				selectedEntry = nil
+			}
 			.inspector(isPresented: $showInspector) {
 				if let entry = selectedEntry {
 					EditFoodEntryView(entry: entry)

@@ -17,6 +17,10 @@ struct EditFoodEntryView: View {
     @State var viewUpdateCounter: Double = 0.0
 	
     @State var editType: Bool = false
+	
+	@Environment(\.modelContext) private var modelContext
+	
+	@Environment(GaugeObservable.self) private var gaugeObservable
     
     var body: some View {
 		ScrollView {
@@ -56,7 +60,7 @@ struct EditFoodEntryView: View {
 				.foregroundStyle(.primary)
 				
 				Button {
-					
+					modelContext.delete(entry)
 				} label: {
 					Label("Delete entry", systemImage: "trash")
 						.labelStyle(.iconOnly)
@@ -79,14 +83,17 @@ struct EditFoodEntryView: View {
 				.transition(.slide)
 			} else {
 				VStack {
+					DatePicker("Change time", selection: $entry.timestamp, displayedComponents: .hourAndMinute)
+						.padding(.top, 30)
+						.padding(.horizontal, 10)
+						.padding(.bottom, 10)
+					
 					DatePicker(
 						"Change date",
 						selection: $entry.timestamp,
 						displayedComponents: [.date]
 					)
 					.datePickerStyle(.graphical)
-					
-					DatePicker("Change time", selection: $entry.timestamp, displayedComponents: .hourAndMinute)
 				}
 				.transition(.slide)
 			}
@@ -103,6 +110,9 @@ struct EditFoodEntryView: View {
             }
         }
 		.animation(.spring, value: editType)
+		.onChange(of: entry.timestamp) {
+			gaugeObservable.forceTriggerRecalc += 1
+		}
     }
 }
 

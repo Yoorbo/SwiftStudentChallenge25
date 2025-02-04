@@ -10,15 +10,21 @@ struct ContentView: View {
 	
 	var body: some View {
 		VStack {
-			GaugeSectionView(expandedFoodButton: $expandedFoodButton)
-				.frame(maxWidth: 350, maxHeight: 350)
-				.padding(30)
-			
-			Text(gaugeObservable.currentPhase.name)
+			VStack {
+				GaugeSectionView(expandedFoodButton: $expandedFoodButton)
+					.frame(maxWidth: 350, maxHeight: 350)
+					.padding(.horizontal, 10)
+			}
+			.frame(minHeight: 350)
+			.padding(20)
 			
 			Spacer()
 			
-			FoodListView()
+			VStack {
+				PhaseDisplayView()
+					.padding(.horizontal)
+				FoodListView()
+			}
 				.padding(.top, expandedFoodButton ? 100 : 0)
 		}
 		.animation(.spring, value: entries)
