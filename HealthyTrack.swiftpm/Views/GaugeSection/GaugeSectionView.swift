@@ -10,13 +10,15 @@ import SwiftData
 import AVFoundation
 
 
-@available(iOS 17.0, *)
+@available(iOS 18.0, *)
 struct GaugeSectionView: View {
 	@Query(sort: \FoodEntry.timestamp, order: .reverse) private var entries: [FoodEntry]
 	@Environment(\.modelContext) private var modelContext
 	@Binding var expandedFoodButton: Bool
 	
 	@Environment(GaugeObservable.self) private var gaugeObservable
+	
+	let logMealTip = LogAMealTip()
 	
 	var body: some View {
 		GaugeView(gauge: gaugeObservable)
@@ -47,6 +49,7 @@ struct GaugeSectionView: View {
 						.transition(.blurReplace)
 					}
 				}
+				.popoverTip(logMealTip, arrowEdge: .top)
 				.overlay {
 					if expandedFoodButton {
 						Button {
@@ -91,7 +94,10 @@ struct GaugeSectionView: View {
 					}
 				}
 			}
-			.sensoryFeedback(.start, trigger: expandedFoodButton == true)
+			.sensoryFeedback(.impact(
+				weight: .light),
+				trigger: expandedFoodButton == true
+			)
 			.onChange(of: entries) {
 				calcTimeSince()
 			}
@@ -100,6 +106,9 @@ struct GaugeSectionView: View {
 			}
 			.onAppear {
 				calcTimeSince()
+				if !entries.isEmpty {
+					LogAMealTip.hasLoggedMeal = true
+				}
 			}
 			.animation(.spring, value: gaugeObservable.timeSince)
 	}
@@ -116,6 +125,9 @@ struct GaugeSectionView: View {
 		
 		expandedFoodButton = false
 		
+		logMealTip.invalidate(reason: .actionPerformed)
+		LogAMealTip.hasLoggedMeal = true
+		
 		do {
 			try modelContext.save()
 		} catch {
@@ -124,7 +136,7 @@ struct GaugeSectionView: View {
 	}
 }
 
-@available(iOS 17.0, *)
+@available(iOS 18.0, *)
 #Preview {
 	@Previewable @State var expandedFoodButton: Bool = false
 	

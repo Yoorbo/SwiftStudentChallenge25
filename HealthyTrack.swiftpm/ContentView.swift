@@ -21,8 +21,25 @@ struct ContentView: View {
 			Spacer()
 			
 			VStack {
-				PhaseDisplayView()
-					.padding(.horizontal)
+				if !entries.isEmpty {
+					PhaseDisplayView()
+						.padding(.horizontal)
+						.transition(
+							.move(edge: .bottom).combined(with: .opacity)
+						)
+				} else {
+					VStack {
+						ContentUnavailableView(
+							"No meal logged yet",
+							systemImage: "fork.knife",
+							description: Text(
+								"Log your first meal using the plus button to see it appear here. \n \n If needed, you can edit its timestamp after creation, by clicking it in the list."
+							)
+						)
+						Spacer()
+					}
+					.padding()
+				}
 				FoodListView()
 			}
 				.padding(.top, expandedFoodButton ? 100 : 0)

@@ -13,22 +13,18 @@ struct GaugeView: View {
     
     var body: some View {
         ZStack {
-            // Full Circle Background
             Circle()
 				.trim(from: 0, to: gauge.descriptor.maxSize)
 				.stroke(gauge.currentPhase.color.gradient.opacity(0.1), style: StrokeStyle(lineWidth: 28, lineCap: .round))
 				.rotationEffect(Angle(degrees: gauge.rotationAngle))
                 .shadow(radius: 5)
             
-            // Draw Each Segment Based on Time
 			ForEach(gauge.descriptor.segments, id: \.name) { segment in
 				let trimRange = gauge.descriptor.trimRange(for: segment)
                 
-                // Normalize timeSince to the range of [0, descriptor.maxSize]
 				let normalizedTime = (gauge.timeSince / 16.0) * gauge.descriptor.maxSize
                 let cappedEnd = min(trimRange.end, normalizedTime)
-                
-                // Draw the segment only if timeSince overlaps
+				
                 Circle()
                     .trim(from: trimRange.start, to: cappedEnd)
                     .stroke(segment.color.gradient, style: StrokeStyle(lineWidth: 28, lineCap: .round))
@@ -43,6 +39,17 @@ struct GaugeView: View {
                     }
             }
         }
+		.popover(isPresented: $gauge.showInfo, arrowEdge: .bottom) {
+			if let phase = gauge.selectedPhase {
+				VStack(alignment: .leading) {
+					Text("What is '\(phase.name)'?")
+						.font(.headline)
+					Text(phase.description)
+				}
+				.padding()
+				.navigationTitle(phase.name)
+			}
+		}
         .overlay {
             VStack {
 				Text("\(gauge.timeSince, specifier: "%.0f")")
@@ -50,15 +57,8 @@ struct GaugeView: View {
 					.font(.system(size: gauge.timeSince + 50 - (gauge.timeSince > 16 ? gauge.timeSince * 1.025 : 0), weight: .black, design: .rounded))
                     .fontWeight(.black)
 					.contentTransition(.numericText(value: gauge.timeSince))
-            }
-        }
-		.sheet(isPresented: $gauge.showInfo) {
-			if let phase = gauge.selectedPhase {
-                VStack(alignment: .center) {
-                    Text(phase.description)
-                }
-                .padding()
-                .navigationTitle(phase.name)
+				Text("Hours since last meal")
+					.foregroundStyle(.secondary)
             }
         }
 		.onChange(of: gauge.showInfo) {

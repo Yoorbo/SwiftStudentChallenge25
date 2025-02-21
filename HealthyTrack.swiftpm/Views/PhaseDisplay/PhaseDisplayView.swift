@@ -25,8 +25,8 @@ struct PhaseDisplayView: View {
 				}
 				Spacer()
 				
-				Image(systemName: "info.circle")
-					.resizable()
+				Image(systemName: "info")
+					.fontWeight(.thin)
 					.frame(width: 30, height: 30)
 					.foregroundStyle(
 						gaugeObservable.currentPhase.color.gradient
@@ -45,19 +45,19 @@ struct PhaseDisplayView: View {
 				.transition(.blurReplace)
 			}
 		}
-		.onTapGesture {
-			isExpanded.toggle()
-		}
 		.animation(.spring, value: isExpanded)
 		.padding(.horizontal, 15)
 		.padding(.vertical, 10)
 		.background(
 			gaugeObservable.currentPhase.color.gradient.opacity(0.1)
 		)
-		.clipShape(RoundedRectangle(cornerRadius: 18))
+		.clipShape(RoundedRectangle(cornerRadius: 10))
 		.overlay(
-			RoundedRectangle(cornerRadius: 18)
+			RoundedRectangle(cornerRadius: 10)
 				.stroke(gaugeObservable.currentPhase.color.gradient, lineWidth: 2)
 		)
+		.onTapGesture {
+			isExpanded.toggle()
+		}
 	}
 }
