@@ -66,6 +66,7 @@ struct GaugeView: View {
 				gauge.selectedPhase = nil
             }
         }
+		.accessibilityLabel(Text("The IntervalRing: A Gauge Graph showing the hours since the last meal. The Gauge shows approximated metabolic phases. The current phase is \(gauge.currentPhase) and the last meal was \(gauge.timeSince) hours ago."))
     }
 }
 

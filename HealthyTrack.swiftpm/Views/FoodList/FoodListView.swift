@@ -8,6 +8,7 @@
 import SwiftUI
 import SwiftData
 import Observation
+import TipKit
 
 @available(iOS 18.0, *)
 @Observable
@@ -22,6 +23,9 @@ struct FoodListView: View {
 	@Environment(\.modelContext) private var modelContext
 	
 	@State var listState = ListState()
+	
+	let editMealTip = EditMealTip()
+	let changeTypeTip = ChangeTypeTip()
 	
 	var body: some View {
 		if !entries.isEmpty {
@@ -41,6 +45,12 @@ struct FoodListView: View {
 					Spacer()
 				}
 				.padding(.bottom, 1)
+				
+				VStack {
+					TipView(editMealTip, arrowEdge: .bottom)
+					TipView(changeTypeTip, arrowEdge: .bottom)
+				}
+					.padding(.horizontal, 22)
 				
 				List(entries) { entry in
 					FoodEntryView(entry: entry, listState: $listState)
@@ -104,6 +114,7 @@ struct FoodEntryView: View {
 				ForEach(FoodType.validCases.reversed(), id: \.self) { type in
 					Button {
 						entry.type = type
+						ChangeTypeTip.hasChangedType = true
 					} label: {
 						Label(type.name, systemImage: type.iconName)
 					}
@@ -140,6 +151,7 @@ struct FoodEntryView: View {
 		.onTapGesture {
 			listState.selectedEntry = entry
 			listState.showInspector = true
+			EditMealTip.hasEditedMeal = true
 		}
 	}
 }

@@ -19,6 +19,7 @@ struct GaugeSectionView: View {
 	@Environment(GaugeObservable.self) private var gaugeObservable
 	
 	let logMealTip = LogAMealTip()
+	let longPressTip = LongPressTip()
 	
 	var body: some View {
 		GaugeView(gauge: gaugeObservable)
@@ -50,6 +51,7 @@ struct GaugeSectionView: View {
 					}
 				}
 				.popoverTip(logMealTip, arrowEdge: .top)
+				.popoverTip(longPressTip, arrowEdge: .top)
 				.overlay {
 					if expandedFoodButton {
 						Button {
@@ -123,6 +125,11 @@ struct GaugeSectionView: View {
 		let newEntry = FoodEntry(timestamp: Date(), type: type)
 		modelContext.insert(newEntry)
 		
+		if type == .StandardMeal {
+			LongPressTip.unspecifiedButtonPresses += 1
+		} else {
+			longPressTip.invalidate(reason: .actionPerformed)
+		}
 		expandedFoodButton = false
 		
 		logMealTip.invalidate(reason: .actionPerformed)

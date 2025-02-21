@@ -8,6 +8,7 @@
 
 import SwiftUI
 import SwiftData
+import TipKit
 
 @available(iOS 18.0, *)
 struct EditFoodEntryView: View {
@@ -21,6 +22,8 @@ struct EditFoodEntryView: View {
 	@Environment(\.modelContext) private var modelContext
 	
 	@Environment(GaugeObservable.self) private var gaugeObservable
+	
+	let changeTimeTip = ChangeTimeTip()
     
     var body: some View {
 		ScrollView {
@@ -83,6 +86,7 @@ struct EditFoodEntryView: View {
 				.transition(.slide)
 			} else {
 				VStack {
+					TipView(changeTimeTip, arrowEdge: .bottom)
 					DatePicker("Change time", selection: $entry.timestamp, displayedComponents: .hourAndMinute)
 						.padding(.top, 30)
 						.padding(.horizontal, 10)
@@ -112,6 +116,7 @@ struct EditFoodEntryView: View {
 		.animation(.spring, value: editType)
 		.onChange(of: entry.timestamp) {
 			gaugeObservable.forceTriggerRecalc += 1
+			ChangeTimeTip.hasChangedTime = true
 		}
     }
 }

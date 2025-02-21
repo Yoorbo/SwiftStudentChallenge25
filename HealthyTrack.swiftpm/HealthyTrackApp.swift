@@ -6,6 +6,10 @@ import TipKit
 struct HealthyTrackApp: App {
 	init() {
 		do {
+			
+			
+			try Tips.resetDatastore()
+			
 			try Tips.configure()
 		}
 		catch {

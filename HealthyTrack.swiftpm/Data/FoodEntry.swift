@@ -1,6 +1,6 @@
 //
 //  FoodEntry.swift
-//  IntervalTrack Watch App
+//  IntervalTrack
 //
 //  Created by Yann Berton on 28.01.25.
 //
@@ -22,7 +22,6 @@ class FoodEntry {
 
 @available(iOS 17.0, *)
 extension FoodEntry {
-    /// Helper to compute "time since" in hours
     var timeIntervalSinceNowInHours: Double {
         Date().timeIntervalSince(timestamp) / 3600
     }
